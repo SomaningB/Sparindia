@@ -10,6 +10,7 @@ interface NavBarProps {
   onSearchChange: (query: string) => void;
   onOpenLogin: () => void;
   onOpenLocation: () => void;
+  onOffersClick: () => void;
   location: string;
 }
 
@@ -21,6 +22,7 @@ export default function NavBar({
   onSearchChange,
   onOpenLogin,
   onOpenLocation,
+  onOffersClick,
   location
 }: NavBarProps) {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -46,17 +48,16 @@ export default function NavBar({
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-600 rounded-xl flex items-center justify-center text-white font-bold text-lg sm:text-xl group-hover:scale-105 transition-transform">
                 IM
               </div>
-              <span className="hidden sm:block text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">
+              <span className="hidden lg:block text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight">
                 Indian<span className="text-green-600">Market</span>
               </span>
             </div>
           </div>
 
-          {/* Location Picker (Desktop) */}
           <div className="hidden lg:flex items-center flex-1 max-w-2xl px-8 gap-4">
             <button 
               onClick={onOpenLocation}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors whitespace-nowrap min-w-[180px] border border-transparent hover:border-gray-200"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors whitespace-nowrap min-w-[170px] border border-transparent hover:border-gray-200"
             >
               <MapPin size={16} className="text-green-600 shrink-0" />
               <div className="text-left overflow-hidden">
@@ -75,23 +76,22 @@ export default function NavBar({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search for spices, fruits, detergent..."
-                className="w-full h-11 pl-11 pr-4 bg-gray-50 border border-transparent rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all outline-none"
+                placeholder="Search for groceries..."
+                className="w-full h-11 pl-11 pr-4 bg-gray-50 border border-transparent rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-green-500 transition-all outline-none"
               />
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              {searchQuery && (
-                <button 
-                  onClick={() => onSearchChange('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-300 hover:text-gray-600"
-                >
-                  <X size={14} />
-                </button>
-              )}
             </div>
           </div>
 
-          {/* User Actions */}
           <div className="flex items-center gap-1 sm:gap-4">
+            <button 
+              onClick={onOffersClick}
+              className="hidden xl:flex items-center gap-2 px-4 py-2 text-sm font-bold text-orange-600 hover:bg-orange-50 rounded-xl transition-all"
+            >
+              <div className="w-2 h-2 bg-orange-600 rounded-full animate-pulse" />
+              Offers
+            </button>
+
             <button 
               onClick={() => setIsMobileSearchOpen(true)}
               className="p-2 text-gray-700 hover:bg-gray-100 rounded-full lg:hidden"

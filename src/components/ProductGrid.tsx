@@ -7,9 +7,10 @@ interface ProductGridProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onAddToCart: (product: Product) => void;
+  onViewDetails: (product: Product) => void;
 }
 
-export default function ProductGrid({ products, activeTab, setActiveTab, onAddToCart }: ProductGridProps) {
+export default function ProductGrid({ products, activeTab, setActiveTab, onAddToCart, onViewDetails }: ProductGridProps) {
   return (
     <section id="popular-products" className="py-12 sm:py-16 bg-gray-50 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,7 +54,8 @@ export default function ProductGrid({ products, activeTab, setActiveTab, onAddTo
               <ProductCard 
                 key={product.id} 
                 product={product} 
-                onAddToCart={onAddToCart} 
+                onAddToCart={onAddToCart}
+                onViewDetails={onViewDetails}
               />
             ))}
           </div>

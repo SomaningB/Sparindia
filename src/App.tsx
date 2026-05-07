@@ -10,17 +10,19 @@ import CategorySection from './components/CategorySection';
 import ProductGrid from './components/ProductGrid';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
+import ProductDetailModal from './components/ProductDetailModal';
 import { useCart } from './hooks/useCart';
 import { Product } from './types';
 import { PRODUCTS } from './data/mockData';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, X, User, MapPin } from 'lucide-react';
+import { CheckCircle2, X, User, MapPin, SearchX, ArrowRight } from 'lucide-react';
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [detailProduct, setDetailProduct] = useState<Product | null>(null);
   const [location, setLocation] = useState('Mumbai - 400001');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -54,11 +56,31 @@ export default function App() {
     addToCart(product);
   };
 
+  const handleAddToCartWithQuantity = (product: Product, quantity: number) => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
+  };
+
   const handleCheckout = () => {
     setIsCartOpen(false);
     setShowCheckoutSuccess(true);
     clearCart();
     setTimeout(() => setShowCheckoutSuccess(false), 5000);
+  };
+
+  const handleSidebarNav = (action: string) => {
+    setIsSidebarOpen(false);
+    if (action === 'Home') {
+      setSelectedCategory(null);
+      setActiveTab('All');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (action === 'Offers') {
+      setActiveTab('Offers');
+      document.getElementById('popular-products')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (action === 'Categories') {
+      document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -71,11 +93,15 @@ export default function App() {
         onSearchChange={setSearchQuery}
         onOpenLogin={() => setIsLoginModalOpen(true)}
         onOpenLocation={() => setIsLocationModalOpen(true)}
+        onOffersClick={() => {
+          setActiveTab('Offers');
+          document.getElementById('popular-products')?.scrollIntoView({ behavior: 'smooth' });
+        }}
         location={location}
       />
       
       <main>
-        <Hero />
+        <Hero onShopNow={() => document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth' })} />
         
         <CategorySection 
           selectedCategory={selectedCategory}
@@ -88,6 +114,7 @@ export default function App() {
         <ProductGrid 
           products={filteredProducts}
           onAddToCart={handleAddToCart} 
+          onViewDetails={setDetailProduct}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
@@ -268,7 +295,11 @@ export default function App() {
               </div>
               <div className="flex flex-col gap-4">
                 {['Home', 'Categories', 'My Orders', 'Offers', 'Help Center'].map(item => (
-                  <button key={item} className="text-left py-3 px-4 rounded-xl hover:bg-gray-50 font-bold transition-colors">
+                  <button 
+                    key={item} 
+                    onClick={() => handleSidebarNav(item)}
+                    className="text-left py-3 px-4 rounded-xl hover:bg-gray-50 font-bold transition-colors"
+                  >
                     {item}
                   </button>
                 ))}
@@ -277,6 +308,12 @@ export default function App() {
           </>
         )}
       </AnimatePresence>
+
+      <ProductDetailModal 
+        product={detailProduct}
+        onClose={() => setDetailProduct(null)}
+        onAddToCart={handleAddToCartWithQuantity}
+      />
 
       {/* Checkout Success Notification */}
       <AnimatePresence>
